@@ -23,14 +23,16 @@
     \setcounter{answer}{0}
 }
 
+\newcounter{answer}
 \newcommand{\answer}{
     \addtocounter{answer}{1}
     \arabic{answer}.
 }
-\newcounter{answer}
+
 \newcommand{\equ}[1]{
+    \subsection*{\answer}
     \begin{equation}
-        \tag*{\answer}
+        \tag*{}
         #1
     \end{equation}
 }
@@ -201,5 +203,58 @@ No prioriza seleccion, ni hace uso de indice.
     ]
 \end{tikzpicture}
 
+\ejercicio{9}
+
+\subsection*{\answer}
+
+\paragraph{Plan 1}
+\begin{equation}
+    \tag*{}
+    B(R) + \frac{ \#R * \#S }{ Card(S, b) } = 10001000
+\end{equation}
+
+\paragraph{Plan 2}
+\begin{equation}
+    \tag*{}
+    B(R) + \frac{\#R * B(S)}{Card(S,c)} = 2501000
+\end{equation}
+
+\subsection*{\answer}
+
+Hacer uso de un Table Based Nested Join da un mejor resultado, dado que los bloques de R contienen muchas tuplas.
+
+\begin{equation}
+    \tag*{}
+    B(R) * B(S) = 1000000
+\end{equation}
+
+\ejercicio{10}
+
+El sort usara aproximadamente $n log_{10}(n)$ accesos a bloques de R: $B(R) log_{10}(B(R)) = 3 * 10^3$.
+
+Para ordenar S por C usara \texttt{IC}, que es clustered, con costo $B(S)$. Luego hara un two-way sort. El merge costara lo mismo que leer ambas listas ordenadas.
+
+Por lo tanto, el total sera $3 * 10^3 + (10^3 + 10^3) = 5 * 10^3$.
+
+\ejercicio{11}
+
+\begin{tikzpicture}
+    \Tree [. {$\sigma_{a, sum(d))}$} 
+        [. {$\bowtie$}
+            [. {$\sigma_{a < max(f)}$}
+                [. {$\bowtie$}
+                    [. {$\gamma_{max(f)}$} {T} ]
+                    [. {R} ]
+                ]
+            ]
+            [. {$\sigma_{d > min(e)}$} 
+                [. {$\bowtie$}
+                    [. {$\gamma_{min(e)}$} {T} ]
+                    [. {$\Pi_{b, d}$} {S} ]
+                ]
+            ]
+        ]
+    ]
+\end{tikzpicture}
 
 \end{document}
