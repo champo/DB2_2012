@@ -119,6 +119,78 @@
 
 \ejercicio{5}
 
+\par Según wikipedia, en el algebra relacional, el full outer join puede ser escrito como:
+
+\begin{equation}
+    R \times S = (R \ltimes S) \cup_{Set} (R \rtimes S)
+    \label{eqn1}
+\end{equation}
+
+\par Donde:
+
+\begin{itemize}
+\item $\times$ es el outer join.
+\item $\rtimes$ es left outer join.
+\item $\ltimes$ es el operador right outer join.
+\end{itemize}
+
+\par También se puede verificar, utilizando la misma fuente, que el left outer join es equivalente a (nota: utiliza un valor $\omega$ en vez de null):
+
+\[
+    R \rtimes S = (R \bowtie S) \cup ((R - \Pi_{r_1, r_2, ..., r_n}(R \bowtie S)) \otimes N)
+\]
+
+Donde $\bowtie$ es el natural join y $N$ representa NULL.
+
+Combinando la primer ecuación y que la selección se puede distribuir en la unión, se llega a:
+
+
+\[
+    \sigma_{b<10}(R \times S) =  \sigma_{b<10}(R \ltimes S) \cup_{Set} \sigma_{b<10}(R \rtimes S)
+\]
+
+Distribuyendo nuevamente la selección de una unión pero esta vez en la segunda ecuación, se llega a:
+
+\[
+    \sigma_{b<10}(R \rtimes S) = \sigma_{b<10}(R \bowtie S) \cup \sigma_{b<10}((R - \Pi_{r_1, r_2, ..., r_n}(R \bowtie S)) \otimes N)
+\]
+
+Sin embargo, se verifica que $b$ es un atributo válido para tanto $R$ como $S$. Por lo tanto:
+\[
+\sigma_{b<10}(R \bowtie S) = \sigma_{b<10}(R) \bowtie \sigma_{b<10}(S)
+\]
+
+Prestando atención al término de la resta, se puede verificar por equivalencia que se puede distribuir la selección nuevamente. Por otro lado, 
+como $b$ es en particular uno de los atributos de la lista, se puede intercambiar su órden con la proyección. Es decir:
+
+\[
+\sigma_{b<10}((R - \Pi_{r_1, r_2, ..., r_n}(R \bowtie S)) \otimes N) = \sigma_{b<10}(R) - \Pi_{r_1, r_2, ..., r_n}(\sigma_{b<10}(R \bowtie S)) \otimes N
+\]
+
+Si se distribuye la selección en el natural join (es atributo de ambos), esta expresión se reduce a:
+
+\[
+\sigma_{b<10}(R \rtimes S) = (\sigma_{b<10}R \bowtie \sigma_{b<10}S) \cup  (\sigma_{b<10}(R) - \Pi_{r_1, r_2, ..., r_n}((\sigma_{b<10}R \bowtie \sigma_{b<10}S)) \otimes N)
+\]
+
+La demostración para el right outer join es similar, con la excepción que el producto cartesiano es al revés, y los atributos en la lista son de la relación 
+$S$. Sin embargo, como $b$ pertenece a ambos, sigue siendo válida. Por lo tanto se llega a que:
+
+\[
+\sigma_{b<10}(R \ltimes S) =(\sigma_{b<10}R \bowtie \sigma_{b<10}S) \cup  N \otimes (\sigma_{b<10}(S) -  \Pi_{s_1, s_2, ..., s_n}((\sigma_{b<10}R \bowtie \sigma_{b<10}S)))
+\]
+
+Por lo cual el outer join es equivalente a la unión de estas últimas dos ecuaciones. 
+
+Sea $T= \sigma_{b<10}R$ y $Q=\sigma_{b<10}S$. Entonces:
+
+\begin{eqnarray}
+    \nonumber \sigma_{b<10}(R \times S) & = & ( T\bowtie Q) \cup (T - \Pi_{r_1, r_2, \dots, r_n}(T \bowtie Q) \otimes N) \\
+    \nonumber  & & \cup_{Set} \\
+    \nonumber  & & (T \bowtie Q) \cup N \otimes (Q - \Pi_{s_1, s_2, \dots, s_n}(T \bowtie q)) \\
+    \nonumber & = & (\sigma_{b<10}(R)) \times (\sigma_{b<10}(S))
+\end{eqnarray}
+
 \ejercicio{6}
 
 \equ{
