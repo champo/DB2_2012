@@ -1,0 +1,136 @@
+\documentclass[11pt,a4paper,titlepage,leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{float}
+
+\title{Optimizacion de Consultas: Informe}
+\author{Juan Pablo Civile \and Martin Sturla}
+\date{2 de Octubre de 2012}
+
+\newcommand{\ejercicio}[1]{
+    \section*{Ejercicio #1}
+    \setcounter{answer}{0}
+}
+
+\newcounter{answer}
+\newcommand{\answer}{
+    \addtocounter{answer}{1}
+    \arabic{answer}.
+}
+
+\newcommand{\equ}[1]{
+    \subsection*{\answer}
+    \begin{equation}
+        \tag*{}
+        #1
+    \end{equation}
+}
+
+\newcommand{\parte}{
+    \subsection*{\answer}
+}
+
+\begin{document}
+\maketitle
+
+\ejercicio{1}
+
+\parte
+Nada. Todas las transacciones están commiteadas.
+
+No se puede saber ninguno de los valores actuales, dado que en el log se guardan los valores antiguos. Los valores nuevos están en el disco, y no se pueden saber accediendo únicamente al log.
+
+\parte
+Se deshacen, de abajo hacia arriba, los cambios de la transacción incompleta. 
+En otras palabras: \texttt{E=50 C=30 A=10} en ese orden. Luego se escibe \texttt{<abort T>} en el log.
+Con la misma lógica del punto 1.1, no se pueden saber los valores de una transacción commiteada de solo mirar el log.
+
+\parte
+Idem 1.2. \texttt{C=30 A=10}. El resto indefinido. Se escribe \texttt{<abort T>} en el log.
+
+
+\ejercicio{2}
+
+\parte Como ambas transacciones están committeadas, se hace todo. Es decir:
+\texttt{A=10 B=20 C=30 D=40 E=50} en ese orden.
+Por lo cual ese será el estado final en disco. No hay aborts.
+
+
+\parte Se rehacen las transacciones cerradas con commits. Es decir:
+\texttt{B=20 D=40}
+La transacción T no ha sido bajada a disco ya que no hay commit. Por lo tanto sus valores son indefinidos y se pueden verificar únicamente accediendo a logs más antiguos (si existen, si no existen dichas variables no han sido inicializadas aún). Además, lógicamente se escribe \texttt{<abort T>}.
+
+
+\parte \texttt{B=20 D=40} en ese orden. Se escribe \texttt{<abort T>} en el log.
+El resto indefinido (ver punto 2.2)
+
+
+\ejercicio{3}
+
+\parte Ambas transacciones incompletas. Se deshace el cambio (se escribe \texttt{A=10} en el disco). \texttt{A=10} estado final. Se escribe \texttt{<abort T>} y \texttt{<abort U>} en el log.
+
+
+\parte Se rehacen las cerradas, y se abortean las abiertas.
+Es decir: se escribe \texttt{A=10} y \texttt{C=30}, y \texttt{B=11} y \texttt{D=41}.
+Luego se escribe \texttt{<abort T>} en el log.
+
+Estado final: \texttt{A=10 B=11 C=30 D=41}
+
+
+\parte Idem 3.2
+Se escribe \texttt{A=10 C=30 E=50}, y \texttt{B=11} y \texttt{D=41}.
+Luego se escribe \texttt{<abort T>} en el log.
+Estado final: \texttt{A=10 B=11 C=30 D=41 E=50}
+
+
+\parte Ambas transacciones comiteadas, se rehace todo.
+Se escribe: \texttt{A=11 B=21 C=31 D=41 E=51}. Ese es el estado final.
+No se escribe ningún abort.
+
+\ejercicio{4}
+
+Se escribirá inmediatamente el \texttt{<start ckpt (T)>} ya que es la única transacción abierta.
+Es decir:
+
+\begin{verbatim}
+<T, A, 10>
+<start ckpt (t)>
+<START U>
+\end{verbatim}
+
+El end por lo tanto irá apenas se comitee la transacción t, es decir justo después de \texttt{<commit T>}:
+
+\begin{verbatim}
+<COMMIT T> 
+<end ckpt>
+<V, B, 80>
+\end{verbatim}
+
+
+
+\parte Como se encuentra primero el \texttt{<start ckpt T>}, se debe ir hasta el primer start de la lista de transacciones en el checkpoint, es decir hasta el \texttt{<start T>}
+
+
+\parte Idem 4.1 ya que no está el \texttt{<end ckpt>} en el log.
+
+
+\parte Se escribe inmediatamente el registro \texttt{<start ckpt U,T,V>}, que son las tres transacciones aún abiertas. Es decir:
+
+\begin{verbatim}
+<U, D, 40,41>
+<start ckpt U,T,V>
+<V, F, 70,71>
+\end{verbatim}
+
+El \texttt{<end>} se escribirá luego de que se escriban todos los dirty buffers de las transacciones abiertas al disco, por lo cual en principio es indefinido. Podría ser al final del archivo, como podría ser inmediatamente después del \texttt{<start ckpt>}.
+
+\ejercicio{5}
+Como es undo/redo, en ambos casos hay que empezar a mirar a partir del \texttt{<start>}, todo lo que hay antes ya se bajó a disco.
+
+\end{document}
