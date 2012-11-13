@@ -1,0 +1,109 @@
+\documentclass[11pt,a4paper,titlepage,leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{tikz-qtree}
+\usepackage{float}
+\usepackage{paralist}
+
+\title{Optimizacion de Consultas: Informe}
+\author{Juan Pablo Civile \and Martin Sturla}
+\date{13 de Noviembre de 2012}
+
+
+\newcommand{\pr}[2]{\Pi_{#1}(#2)}
+\newcommand{\join}[2]{#1 \bowtie #2}
+\newcommand{\filter}[2]{\sigma_{#1}(#2)}
+\newcommand{\ejercicio}[1]{
+    \section*{Ejercicio #1}
+    \setcounter{answer}{0}
+}
+
+\newcounter{answer}
+\newcommand{\answer}{
+    \addtocounter{answer}{1}
+    \arabic{answer}.
+}
+
+\newcommand{\equ}[1]{
+    \subsection*{\answer}
+    \begin{equation}
+        \tag*{}
+        #1
+    \end{equation}
+}
+
+\newcommand{\parte}{
+    \subsection*{\answer}
+}
+
+\lstset{
+    language = SQL,
+    basicstyle=\footnotesize
+}
+
+
+\begin{document}
+
+\maketitle
+
+\ejercicio{1}
+
+saayyyyyyyyyyyyyyyy waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaat
+
+\ejercicio{2}
+
+\parte
+\begin{tikzpicture}[grow'=up]
+    \Tree [. {$P$}
+        [. {$W_1(A)$}
+            [. {$R_1(A)$} ]
+            [. {$R_2(A)$} ]
+        ]
+        [. {$W_2(B)$}
+            [. {$R_3(B)$} ]
+            [. {$R_2(B)$} ]
+        ]
+        [. {$W_1(C)$}
+            [. {$R_2(C)$} ]
+        ]
+    ]
+\end{tikzpicture}
+
+\parte
+
+\begin{inparaenum}[]
+    \item $R_3(B)$
+    \item $R_2(A)$
+    \item $R_2(C)$
+    \item $R_2(B)$
+    \item $W_2(B)$
+    \item $R_1(A)$
+    \item $W_1(A)$
+    \item $W_1(C)$
+\end{inparaenum}
+
+\parte
+
+Insufficient data.
+
+\ejercicio{3}
+
+No sigue las reglas de \textit{2PL Estricto}, ya que no sigue las reglas basicas de \textit{2PL}. $T_2$ libera el lock que tiene sobre $A$ antes de tomar un lock sobre $B$, que no se permite en \textit{2PL}
+
+\ejercicio{4}
+
+\ejercicio{5}
+
+\ejercicio{6}
+
+\ejercicio{7}
+
+\ejercicio{8}
+
+\end{document}
