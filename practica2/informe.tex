@@ -249,53 +249,80 @@ El resultado es el esperado. El uso de espacio del arbol es igual a cuando se lo
 
 \parte
 
-raw results, no se que onda
+Previo al rebuild compress obtenemos:
 
-\begin{verbatim}
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Alocado \\
+        \hline
+        2 & 500 & 3 & 0 & 32016 & 11046 \\
+    \end{tabular}
+    \label{tbl:ej2-15a}
+\end{table}
 
-SQL> analyze index idxemple validate structure;
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        1 & 500
 
-Index analyzed.
+    \end{tabular}
+    \label{tbl:ej2-15b}
+\end{table}
 
-SQL> select height , lf_rows, lf_blks, del_lf_rows, btree_space, used_space from index_stats;
+Luego de ejecutar el rebuild compress tenemos:
 
-    HEIGHT    LF_ROWS    LF_BLKS DEL_LF_ROWS BTREE_SPACE USED_SPACE
----------- ---------- ---------- ----------- ----------- ----------
-         2        500          3           0       32016      11046
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Alocado \\
+        \hline
+        1 & 500 & 1 & 0 & 7992 & 5517 \\
+    \end{tabular}
+    \label{tbl:ej2-15a}
+\end{table}
 
-SQL> select distinct_keys, most_repeated_key from index_stats;
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        1 & 500
 
-DISTINCT_KEYS MOST_REPEATED_KEY
-------------- -----------------
-            1               500
+    \end{tabular}
+    \label{tbl:ej2-15b}
+\end{table}
 
-SQL> alter index idxemple rebuild compress 1;
-
-Index altered.
-
-SQL> analyze index idxemple validate structure;
-
-Index analyzed.
-
-SQL> select height , lf_rows, lf_blks, del_lf_rows, btree_space, used_space from index_stats;
-
-    HEIGHT    LF_ROWS    LF_BLKS DEL_LF_ROWS BTREE_SPACE USED_SPACE
----------- ---------- ---------- ----------- ----------- ----------
-         1        500          1           0        7992       5517
-
-SQL> select distinct_keys, most_repeated_key from index_stats;
-
-DISTINCT_KEYS MOST_REPEATED_KEY
-------------- -----------------
-            1               500
-
-\end{verbatim}
+Podemos ver que al comprimir los resultados un solo bloque del indice es capaz de guardar todos los resultados. Esto causa que la altura del arbol disminuya ya que no es necesario hacer un split para insertar todos los valores.
 
 \ejercicio{3}
 
 \parten{3}
 
-No es posible crear el indice, ya que Oracle no permite crear un indice sobre una columna que ya esta indexada.
+No es posible crear el indice, ya que Oracle no permite crear un indice sobre una columna que ya esta indexada. Si borramos el indice existente, y creamos uno nuevo, o usamos el ya existente, vemos los siguientes resultados:
+
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c}
+        Cantidad de Tuplas & Cantidad de & Espacio Usado & Distinct & Cantidad de \\
+        en hojas           & Bloques Hoja & & Keys & Repeticiones \\
+        \hline
+        500 & 2 & 7407 & 500 & 1 \\
+    \end{tabular}
+    \label{tbl:ej3-3}
+\end{table}
 
 \parte
 
@@ -308,10 +335,26 @@ No es posible crear el indice, ya que Oracle no permite crear un indice sobre un
         \hline
         500 & 2 & 11024 & 5 & 100 \\
     \end{tabular}
-    \label{tbl:ej3-3}
+    \label{tbl:ej3-4}
 \end{table}
 
-\parten{6}
+\parte
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c}
+        Cantidad de Tuplas & Cantidad de & Espacio Usado & Distinct & Cantidad de \\
+        en hojas           & Bloques Hoja & & Keys & Repeticiones \\
+        \hline
+        0 & 0 & 0 & 0 & 0 \\
+    \end{tabular}
+    \label{tbl:ej3-4}
+\end{table}
+
+Los datos provistos por el analisis del indice no indican que se haga uso del mismo.
+
+\parte
 
 \begin{table}[H]
     \centering
