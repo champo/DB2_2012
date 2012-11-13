@@ -94,16 +94,45 @@ Insufficient data.
 
 \ejercicio{3}
 
-No sigue las reglas de \textit{2PL Estricto}, ya que no sigue las reglas basicas de \textit{2PL}. $T_2$ libera el lock que tiene sobre $A$ antes de tomar un lock sobre $B$, que no se permite en \textit{2PL}
+No sigue las reglas de \textit{2PL Estricto}, ya que no sigue las reglas basicas de \textit{2PL}. $T_2$ libera el lock que tiene sobre $A$ antes de tomar un lock sobre $B$, que no se permite en \textit{2PL}.
 
 \ejercicio{4}
 
+\parte
+
+Hay 9 planes posibles.
+
+\parte
+
+Solo un plan.
+
 \ejercicio{5}
+
+Si consideramos las posibilidades sin contar las operaciones \texttt{START} y \texttt{COMMIT}, solo 4 planes son posibles. Uno es el plan serial $(T_1, T_2)$, otro (
+\begin{inparaenum}[]
+    \item $R_1(A)$,
+    \item $R_1(B)$,
+    \item $INC_1(A)$,
+    \item $R_2(A)$,
+    \item $INC_1(B)$,
+    \item $R_2(B)$,
+    \item $INC_2(A)$,
+    \item $INC_2(B)$
+\end{inparaenum}
+), y los ultimos 2 planes son iguales excepto que es invierte $T_1$ por $T_2$.
+
+Para los alternativas seriales hay 36 posibles planes dependendiendo de la ubicacion de \texttt{START} y \texttt{COMMIT}, y para las otras alternativas son 25 posibles planes. Eso nos deja con un total de 124 planes.
 
 \ejercicio{6}
 
+Solo una operacion es posible, $R_2(C)$.
+
 \ejercicio{7}
 
+$2^9$. Las operaciones no son conflictivas, y con el uso de shared locks pueden ocurrir en cualquier orden sin demoras.
+
 \ejercicio{8}
+
+
 
 \end{document}
