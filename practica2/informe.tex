@@ -1,0 +1,296 @@
+\documentclass[11pt,a4paper,titlepage,leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{tikz-qtree}
+\usepackage{float}
+\usepackage{paralist}
+
+\title{optimizacion de consultas: informe}
+\author{juan pablo civile \and martin sturla}
+\date{13 de noviembre de 2012}
+
+
+\newcommand{\pr}[2]{\pi_{#1}(#2)}
+\newcommand{\join}[2]{#1 \bowtie #2}
+\newcommand{\filter}[2]{\sigma_{#1}(#2)}
+\newcommand{\ejercicio}[1]{
+    \section*{Ejercicio #1}
+    \setcounter{answer}{0}
+}
+
+\newcounter{answer}
+\newcommand{\answer}{
+    \addtocounter{answer}{1}
+    \arabic{answer}.
+}
+
+\newcommand{\equ}[1]{
+    \subsection*{\answer}
+    \begin{equation}
+        \tag*{}
+        #1
+    \end{equation}
+}
+
+\newcommand{\parten}[1]{
+    \setcounter{answer}{#1}
+    \subsection*{\arabic{answer}.}
+}
+
+\newcommand{\parte}{
+    \subsection*{\answer}
+}
+
+\lstset{
+    language = sql,
+    basicstyle=\footnotesize
+}
+
+
+\begin{document}
+
+\maketitle
+
+\ejercicio{1}
+
+\parten{3}
+
+Ejecutando el comando obtenemos que el total de bloques usados es 13. Sabiendo que \texttt{PCT\_FREE} toma el valor 10, calculamos:
+
+\begin{equation}
+    \frac{ 13 * 8KB * (1 - 0.1) - 187B * 13 }{ 200 } = 467
+\end{equation}
+
+
+\parte
+
+\begin{enumerate}[a) ]
+    \item 1 bloque
+    \item 13 bloques
+    \item 7-8 bloques
+\end{enumerate}
+
+\ejercicio{2}
+
+\parten{3}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Distinct & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Keys& Alocado \\
+        \hline
+        1 & 200 & 1 & 0 & 200 & 7996 & 4400 \\
+    \end{tabular}
+    \label{tbl:ej2-3}
+\end{table}
+
+\parte
+
+Todas las consultas deberan hacer como mucho 2 accesos, uno al indice y otro al bloque donde este almacenada la tupla.
+
+\parten{6}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Distinct & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Keys& Alocado \\
+        \hline
+        2 & 400 & 2 & 0 & 400 & 24020 & 8811 \\
+    \end{tabular}
+    \label{tbl:ej2-6}
+\end{table}
+
+Si comparamos con los resultados de la tabla anterior, podemos ver que la cantidad de bloques hoja se duplico, y earbol aumento su altura en 1. Esto se debe a que el bloque hoja que tenia el arbol antes de insertar los codigos nentre 201 y 400, debe haber excedido su capacidad, y fue dividido en 2, aumentando la altura del arbol.
+
+\parte
+
+
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        400 & 1
+
+    \end{tabular}
+    \label{tbl:ej2-7}
+\end{table}
+
+Dado que las inserciones hechas fueron todas con codigo distinto, el resultado visto es el esperado.
+
+\parten{9}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Alocado \\
+        \hline
+        2 & 900 & 4 & 0 & 40012 & 19885 \\
+    \end{tabular}
+    \label{tbl:ej2-9a}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        400 & 501
+
+    \end{tabular}
+    \label{tbl:ej2-9b}
+\end{table}
+
+Si bien podemos ver que la cantidad de bloques hoja aumento, no aumentaron en una cantidad suficiente como para justificar un cambio de altura del arbol. Al ser la clave insertada la mayor clave presente en el arbol, se agregaron los bloques hoja necesarios para guardar las entradas como hijos de la raiz, a la derecha de los bloques existentes.
+
+\parten{11}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Alocado \\
+        \hline
+        2 & 900 & 4 & 700 & 40012 & 19885 \\
+    \end{tabular}
+    \label{tbl:ej2-11a}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        400 & 501
+
+    \end{tabular}
+    \label{tbl:ej2-11b}
+\end{table}
+
+El resultado visto se puede explicar considerando el uso de bajas logicas para evitar la reorganizacion de datos en disco.
+
+\parte{13}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Alocado \\
+        \hline
+        2 & 200 & 1 & 0 & 16024 & 4400 \\
+    \end{tabular}
+    \label{tbl:ej2-13a}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        200 & 1
+
+    \end{tabular}
+    \label{tbl:ej2-13b}
+\end{table}
+
+La unica parte del resultado que llama la atencion, es el exceso de espacio alocado con respecto a los resultados de las partes 2.4 y 2.6.
+
+\parte
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c|c}
+        Altura & Cantidad de Tuplas & Cantidad de & Cantidad de & Espacio Total & Espacio Usado \\
+        & en hojas           & Bloques Hoja                & Tuplas Borradas           & Alocado \\
+        \hline
+        2 & 200 & 1 & 0 & 7996 & 4400 \\
+    \end{tabular}
+    \label{tbl:ej2-14a}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c}
+        Cantidad de claves distintas & Cantidad de repeticiones \\
+        & (de la clave mas repetida) \\
+        \hline
+        200 & 1
+
+    \end{tabular}
+    \label{tbl:ej2-14b}
+\end{table}
+
+El resultado es el esperado. El uso de espacio del arbol es igual a cuando se lo construyo por primera vez, reflejando el hecho de que se lo reconstruyo completo.
+
+\parte
+
+raw results, no se que onda
+
+\begin{verbatim}
+
+SQL> analyze index idxemple validate structure;
+
+Index analyzed.
+
+SQL> select height , lf_rows, lf_blks, del_lf_rows, btree_space, used_space from index_stats;
+
+    HEIGHT    LF_ROWS    LF_BLKS DEL_LF_ROWS BTREE_SPACE USED_SPACE
+---------- ---------- ---------- ----------- ----------- ----------
+         2        500          3           0       32016      11046
+
+SQL> select distinct_keys, most_repeated_key from index_stats;
+
+DISTINCT_KEYS MOST_REPEATED_KEY
+------------- -----------------
+            1               500
+
+SQL> alter index idxemple rebuild compress 1;
+
+Index altered.
+
+SQL> analyze index idxemple validate structure;
+
+Index analyzed.
+
+SQL> select height , lf_rows, lf_blks, del_lf_rows, btree_space, used_space from index_stats;
+
+    HEIGHT    LF_ROWS    LF_BLKS DEL_LF_ROWS BTREE_SPACE USED_SPACE
+---------- ---------- ---------- ----------- ----------- ----------
+         1        500          1           0        7992       5517
+
+SQL> select distinct_keys, most_repeated_key from index_stats;
+
+DISTINCT_KEYS MOST_REPEATED_KEY
+------------- -----------------
+            1               500
+
+\end{verbatim}
+
+\ejercicio{3}
+
+\end{document}
