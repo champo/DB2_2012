@@ -189,7 +189,7 @@ Si bien podemos ver que la cantidad de bloques hoja aumento, no aumentaron en un
 
 El resultado visto se puede explicar considerando el uso de bajas logicas para evitar la reorganizacion de datos en disco.
 
-\parte{13}
+\parten{13}
 
 \begin{table}[H]
     \centering
@@ -292,5 +292,40 @@ DISTINCT_KEYS MOST_REPEATED_KEY
 \end{verbatim}
 
 \ejercicio{3}
+
+\parten{3}
+
+No es posible crear el indice, ya que Oracle no permite crear un indice sobre una columna que ya esta indexada.
+
+\parte
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c}
+        Cantidad de Tuplas & Cantidad de & Espacio Usado & Distinct & Cantidad de \\
+        en hojas           & Bloques Hoja & & Keys & Repeticiones \\
+        \hline
+        500 & 2 & 11024 & 5 & 100 \\
+    \end{tabular}
+    \label{tbl:ej3-3}
+\end{table}
+
+\parten{6}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{c|c|c|c|c}
+        Cantidad de Tuplas & Cantidad de & Espacio Usado & Distinct & Cantidad de \\
+        en hojas           & Bloques Hoja & & Keys & Repeticiones \\
+        \hline
+        5 & 1 & 787 & 5 & 1 \\
+    \end{tabular}
+    \label{tbl:ej3-6}
+\end{table}
+
+En terminos de espacio de almacenamiento usado, el indice bitmap hace mejor uso del espacio.
+
 
 \end{document}
