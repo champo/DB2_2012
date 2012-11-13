@@ -133,6 +133,45 @@ $2^9$. Las operaciones no son conflictivas, y con el uso de shared locks pueden 
 
 \ejercicio{8}
 
+\parte
 
+\begin{tabular}{c|c|c|c|l}
+    $T_1$ & $T_2$ & $A$ & $B$ & \\
+    \hline \\
+    1 & 2 & $RT = 0$ & $RT = 0$ & \\
+    & & $WT = 0$ & $WT = 0$ & \\
+    \hline \\
+    \hline \\
+    $R_1(A)$ & & $RT = 1$ & & \\
+    \hline
+    & $R_2(B)$ & & $RT = 2$ & \\
+    \hline
+    & $W_2(A)$ & $WT = 2$, $C = 0$ & & $TS(T_2) > RT(A)$, $TS(T_2) > WT(A)$ \\
+    \hline
+    $W_1(B)$ & & & $TS(T_1) < RT(B)$ \\
+    \texttt{ABORT} & & & & \\
+\end{tabular}
+
+\parte
+
+\begin{tabular}{c|c|c|c|c|l}
+    $T_1$ & $T_2$ & $T_3$ & $T_4$ & $A$ & \\
+    \hline \\
+    1 & 2 & 3 & 4 & $RT = 0$ & \\
+      &   &   &   & $WT = 0$ & \\
+    \hline \\
+    \hline \\
+    $W_1(A)$ & & & & $WT = 1$, $C = 0$ & $WT(A) < TS(T_1)$, $RT(A) < TS(T_1)$ \\
+    \hline
+    & $W_2(A)$ & & & $WT = 2$, $C = 0$ & $WT(A) < TS(T_2)$, $RT(A) < TS(T_2)$ \\
+    \hline
+    & & $W_3(A)$ & & $WT = 3$, $C = 0$ & $WT(A) < TS(T_3)$, $RT(A) < TS(T_3)$ \\
+    \hline
+    & $R_2(A)$ & & & & $TS(T_2) < WT(A)$ \\
+    & \texttt{ABORT} & & & \\
+    \hline
+    & & & $R_4(A)$ & & $TS(T_4) > WT(A)$, $C(A) = 0$ \\
+    & & & \texttt{DELAY} & & \\
+\end{tabular}
 
 \end{document}
